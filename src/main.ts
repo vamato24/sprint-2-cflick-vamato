@@ -41,7 +41,7 @@ function handleKeypress(event: KeyboardEvent) {
 }
 
 function prepareSumbitClick() {
-    const maybeInput: HTMLElement | null = document.getElementById("submit-button")
+    const maybeInput: HTMLCollection | null = document.getElementsByClassName("repl-button")
     if(maybeInput == null) {
         console.log("Couldn't find sumbit button!")
     } else if(!(maybeInput instanceof HTMLButtonElement)) {

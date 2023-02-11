@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleClick = exports.getPressCount = exports.prepareKeypress = exports.handleKeypress = void 0;
 // The window.onload callback is invoked when the window is first loaded by the browser
-window.onload = () => {
+window.onload = function () {
     prepareKeypress();
     prepareSumbitClick();
     // If you're adding an event for a button click, do something similar.
@@ -11,16 +8,16 @@ window.onload = () => {
 };
 function prepareKeypress() {
     // As far as TypeScript knows, there may be *many* elements with this class.
-    const maybeInputs = document.getElementsByClassName('repl-command-box');
+    var maybeInputs = document.getElementsByClassName('repl-command-box');
     // Assumption: there's only one thing
-    const maybeInput = maybeInputs.item(0);
+    var maybeInput = maybeInputs.item(0);
     // Is the thing there? Is it of the expected type? 
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeInput == null) {
         console.log("Couldn't find input element");
     }
     else if (!(maybeInput instanceof HTMLInputElement)) {
-        console.log(`Found element ${maybeInput}, but it wasn't an input`);
+        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
     }
     else {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
@@ -29,26 +26,23 @@ function prepareKeypress() {
         maybeInput.addEventListener("keypress", handleKeypress);
     }
 }
-exports.prepareKeypress = prepareKeypress;
 // We'll use a global state reference for now
-let pressCount = 0;
+var pressCount = 0;
 function getPressCount() {
     return pressCount;
 }
-exports.getPressCount = getPressCount;
 function handleKeypress(event) {
     // The event has more fields than just the key pressed (e.g., Alt, Ctrl, etc.)
     pressCount = pressCount + 1;
-    console.log(`key pressed: ${event.key}. ${getPressCount()} presses seen so far.`);
+    console.log("key pressed: ".concat(event.key, ". ").concat(getPressCount(), " presses seen so far."));
 }
-exports.handleKeypress = handleKeypress;
 function prepareSumbitClick() {
-    const maybeInput = document.getElementById("submit-button");
+    var maybeInput = document.getElementsByClassName("repl-button");
     if (maybeInput == null) {
         console.log("Couldn't find sumbit button!");
     }
     else if (!(maybeInput instanceof HTMLButtonElement)) {
-        console.log(`Found element ${maybeInput}, but it wasn't an input`);
+        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
     }
     else {
         maybeInput.addEventListener("click", handleClick);
@@ -58,9 +52,8 @@ function handleClick() {
     console.log("submit button clicked! " + getPressCount() + " keys have been pressed");
     pressCount = 0;
 }
-exports.handleClick = handleClick;
 function parseCommandCall(command) {
-    let instruction = command.split(" ")[0];
+    var instruction = command.split(" ")[0];
     switch (instruction) {
         case "mode": {
             console.log("got mode command!");
@@ -94,7 +87,7 @@ function parseCommandCall(command) {
     }
 }
 //TODO: When creating an output function, make switch on briefMode.
-let briefMode = true;
+var briefMode = true;
 function modeSwitch() {
     briefMode = !briefMode;
     if (briefMode) {
@@ -115,7 +108,10 @@ function csvViewer() {
 function csvSearcher() {
     console.log("not implemented yet, go yell at connor");
 }
-const testData1 = [[1, 2, 3], ["a", "b", "c"], [true, false, 3]];
-const pathMapper = new Map();
+// Provide this to other modules (e.g., for testing!)
+// The configuration in this project will require /something/ to be exported.
+export { handleKeypress, prepareKeypress, getPressCount, handleClick };
+var testData1 = [[1, 2, 3], ["a", "b", "c"], [true, false, 3]];
+var pathMapper = new Map();
 //TODO: Create some fake datasets + assc file paths
 //i.e. lots of const xyz = [][];
