@@ -1,6 +1,7 @@
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = function () {
     prepareButtonPress();
+    prepareKeypress();
     // If you're adding an event for a button click, do something similar.
     // The event name in that case is "click", not "keypress", and the type of the element 
     // should be HTMLButtonElement. The handler function for a "click" takes no arguments.
@@ -43,6 +44,57 @@ function handleButtonPress(event) {
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
         parseCommandCall(maybeInput.value);
+        maybeInput.value = "";
+        var history_1 = document.getElementsByClassName("repl-history")[0];
+        var historyHeight = history_1.scrollHeight;
+        history_1.scrollTo(0, historyHeight);
+    }
+}
+function prepareKeypress() {
+    // As far as TypeScript knows, there may be *many* elements with this class.
+    var maybeInputs = document.getElementsByClassName('repl-command-box');
+    // Assumption: there's only one thing
+    var maybeInput = maybeInputs.item(0);
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeInput == null) {
+        console.log("Couldn't find input element");
+    }
+    else if (!(maybeInput instanceof HTMLInputElement)) {
+        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
+    }
+    else {
+        // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+        // The browser will invoke the function when a key is pressed with the input in focus.
+        //  (This should remind you of the strategy pattern things we've done in Java.)
+        maybeInput.addEventListener("keypress", handleKeypress);
+    }
+}
+function handleKeypress(event) {
+    // The event has more fields than just the key pressed (e.g., Alt, Ctrl, etc.)
+    if (event.code === "Enter") {
+        // As far as TypeScript knows, there may be *many* elements with this class.
+        var maybeInputs = document.getElementsByClassName('repl-command-box');
+        // Assumption: there's only one thing
+        var maybeInput = maybeInputs.item(0);
+        // Is the thing there? Is it of the expected type? 
+        //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+        if (maybeInput == null) {
+            console.log("Couldn't find input element");
+        }
+        else if (!(maybeInput instanceof HTMLInputElement)) {
+            console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
+        }
+        else {
+            // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+            // The browser will invoke the function when a key is pressed with the input in focus.
+            //  (This should remind you of the strategy pattern things we've done in Java.)
+            parseCommandCall(maybeInput.value);
+            maybeInput.value = "";
+            var history_2 = document.getElementsByClassName("repl-history")[0];
+            var historyHeight = history_2.scrollHeight;
+            history_2.scrollTo(0, historyHeight);
+        }
     }
 }
 function parseCommandCall(command) {
@@ -74,8 +126,7 @@ function parseCommandCall(command) {
             break;
         }
         case "echo": {
-            console.log("echo");
-            createCommandElement(command);
+            print(command);
             break;
         }
         default: {
@@ -84,11 +135,7 @@ function parseCommandCall(command) {
         }
     }
 }
-function createCommandElement(result) {
-    var node = document.createTextNode(result);
-    var commandElement = document.createElement("p");
-    commandElement.appendChild(node);
-    commandElement.className = "repl-command";
+function print(command) {
     // As far as TypeScript knows, there may be *many* elements with this class.
     var maybeDivs = document.getElementsByClassName('repl-history');
     // Assumption: there's only one thing
@@ -105,7 +152,27 @@ function createCommandElement(result) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
-        maybeDiv.appendChild(commandElement);
+        var instruction = command.split(" ")[0];
+        if (briefMode) {
+            var commandNode = document.createTextNode(command.substring(instruction.length));
+            var commandElement = document.createElement("p");
+            commandElement.appendChild(commandNode);
+            commandElement.className = "repl-command";
+            maybeDiv.appendChild(commandElement);
+        }
+        else {
+            var instruction_1 = command.split(" ")[0];
+            var verboseCommandNode = document.createTextNode("Command: " + command);
+            var verboseOutputNode = document.createTextNode("Output: " + command.substring(instruction_1.length));
+            var verboseCommandElement = document.createElement("p");
+            verboseCommandElement.appendChild(verboseCommandNode);
+            verboseCommandElement.className = "repl-command";
+            var verboseOutputElement = document.createElement("p");
+            verboseOutputElement.appendChild(verboseOutputNode);
+            verboseOutputElement.className = "repl-command";
+            maybeDiv.appendChild(verboseCommandElement);
+            maybeDiv.appendChild(verboseOutputElement);
+        }
     }
 }
 //TODO: When creating an output function, make switch on briefMode.
