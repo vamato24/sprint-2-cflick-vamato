@@ -2,7 +2,7 @@
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = () => {    
     prepareKeypress()   
-    prepareSumbitClick(); 
+    prepareButtonPress(); 
     
     // If you're adding an event for a button click, do something similar.
     // The event name in that case is "click", not "keypress", and the type of the element 
@@ -40,20 +40,28 @@ function handleKeypress(event: KeyboardEvent) {
     console.log(`key pressed: ${event.key}. ${getPressCount()} presses seen so far.`)
 }
 
-function prepareSumbitClick() {
-    const maybeInput: HTMLElement | null = document.getElementById("submit-button")
+function prepareButtonPress() {
+    console.log("Test")
+    // As far as TypeScript knows, there may be *many* elements with this class.
+    const maybeInputs: HTMLCollectionOf<Element> = document.getElementsByClassName('repl-button')
+    // Assumption: there's only one thing
+    const maybeInput: Element | null = maybeInputs.item(0)
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if(maybeInput == null) {
-        console.log("Couldn't find sumbit button!")
+        console.log("Couldn't find input element")
     } else if(!(maybeInput instanceof HTMLButtonElement)) {
         console.log(`Found element ${maybeInput}, but it wasn't an input`)
     } else {
-        maybeInput.addEventListener("click", handleClick);
+        // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+        // The browser will invoke the function when a key is pressed with the input in focus.
+        //  (This should remind you of the strategy pattern things we've done in Java.)
+        maybeInput.addEventListener("click", handleButtonPress);
     }
 }
 
-function handleClick() {
-    console.log("submit button clicked! " + getPressCount() + " keys have been pressed")
-    pressCount = 0
+function handleButtonPress(event: MouseEvent) {
+    console.log(`test`)
 }
 
 function parseCommandCall(command: string) {
@@ -119,7 +127,7 @@ function csvSearcher() {
 
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
-export {handleKeypress, prepareKeypress, getPressCount, handleClick}
+export {handleKeypress, prepareKeypress, getPressCount, prepareButtonPress, handleButtonPress}
 
 const testData1 = [[1,2,3], ["a", "b", "c"], [true, false, 3]];
 
