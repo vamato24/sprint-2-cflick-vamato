@@ -1,24 +1,45 @@
-.repl-history {      
-    height:65vh;   
-    margin: auto;
-    display: block;
-    overflow: scroll;    
+* {
+    margin: 0;
+    font-family: 'Outfit';
 }
 
-.repl-input {        
-    margin: auto;  
-    width:50vw;  
-    height:10vh;
+body {
+    position: relative;
+    height: 100vh;
+    background-color: black;
+}
+
+.repl {
+    position: absolute;
+    bottom: 2rem;
+    width: 100%;
+}
+
+.repl-history {
+    height: 95vh;   
+    overflow: auto;
     display: flex;
+    flex-direction: column;
+    padding: 0rem 2rem;
+    color: greenyellow;
+}
+
+.repl-history > :first-child {
+    margin-top: auto;
+}
+
+.repl-input {
+    display: flex;
+    padding: 0rem 2rem;
+    padding-top: 1rem;
 }
 
 .repl-command-box {
-    width: 75%;            
-    margin: auto;
+    width: 100%;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+    background-color: #b5bcc7;
+    border:none;
+    border-radius: 0.2rem;
+    
 }
-
-button {
-    margin: auto;
-    color: rebeccapurple;
-}
-

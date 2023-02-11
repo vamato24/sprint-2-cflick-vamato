@@ -106,7 +106,7 @@ function modeSwitch() {
 }
 
 function csvLoader(targetPath: String) {
-    console.log("not implemented yet, go yell at connor")
+    console.log("not implemented yet, go yell at connor");
 }
 
 function csvViewer() {
@@ -120,3 +120,11 @@ function csvSearcher() {
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
 export {handleKeypress, prepareKeypress, getPressCount, handleClick}
+
+const testData1 = [[1,2,3], ["a", "b", "c"], [true, false, 3]];
+
+
+const pathMapper = new Map();
+
+//TODO: Create some fake datasets + assc file paths
+    //i.e. lots of const xyz = [][];

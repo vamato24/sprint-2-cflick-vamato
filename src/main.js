@@ -115,3 +115,7 @@ function csvViewer() {
 function csvSearcher() {
     console.log("not implemented yet, go yell at connor");
 }
+const testData1 = [[1, 2, 3], ["a", "b", "c"], [true, false, 3]];
+const pathMapper = new Map();
+//TODO: Create some fake datasets + assc file paths
+//i.e. lots of const xyz = [][];
