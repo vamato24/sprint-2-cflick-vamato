@@ -1,0 +1,24 @@
+.repl-history {      
+    height:65vh;   
+    margin: auto;
+    display: block;
+    overflow: scroll;    
+}
+
+.repl-input {        
+    margin: auto;  
+    width:50vw;  
+    height:10vh;
+    display: flex;
+}
+
+.repl-command-box {
+    width: 75%;            
+    margin: auto;
+}
+
+button {
+    margin: auto;
+    color: rebeccapurple;
+}
+
