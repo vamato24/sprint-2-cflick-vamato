@@ -78,6 +78,7 @@ function parseCommandCall(command) {
         case "search": {
             console.log("got load_file command!");
             //something else...
+            //handle situations where we don't get a column or search term
             break;
         }
         default: {
@@ -99,19 +100,62 @@ function modeSwitch() {
         //front end stuff
     }
 }
+var activeData = new Array(new Array());
 function csvLoader(targetPath) {
-    console.log("not implemented yet, go yell at connor");
+    if (pathMapper.get(targetPath) !== undefined) {
+        activeData = pathMapper.get(targetPath);
+        console.log("CSV LOADED");
+    }
+    else
+        [
+            console.log("Couldn't find CSV!")
+        ];
 }
 function csvViewer() {
     console.log("not implemented yet, go yell at connor");
+    //Waiting for a container to throw an html table into...
 }
-function csvSearcher() {
+function csvSearcher(targIndex, searchTerm) {
     console.log("not implemented yet, go yell at connor");
+    var accumulatedRows = new Array();
+    var intIndex = -1;
+    var potentialIntIndex = parseInt(targIndex);
+    if (potentialIntIndex.toString() == targIndex) {
+        //we know it's an int index
+        intIndex = potentialIntIndex;
+    }
+    else {
+        //we know it's an str header
+        intIndex = activeData[0].indexOf(targIndex);
+    }
+    if (intIndex < 0 || intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
+        console.log("Index doesn't exist or is out of bounds!");
+    }
+    activeData.forEach(function (row) {
+        if (row.includes(searchTerm)) {
+            accumulatedRows.push(row);
+        }
+    });
+    console.log(accumulatedRows.toString());
 }
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
 export { handleKeypress, prepareKeypress, getPressCount, handleClick };
-var testData1 = [[1, 2, 3], ["a", "b", "c"], [true, false, 3]];
+//TODO: Better names
+//TODO: Check if we /need/ numbers as a base or if just assuming everything is given as a workable string is acceptable
+var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"]];
+var testData2 = [["hi"]];
+var testData3 = [["hello"], ["elements"], ["items"], ["objects"]];
+var testData4 = [["hello"], ["things", "bump"], ["weilufb"], ["data"]];
+var testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]];
+var testData6 = [[]];
+//TODO: More test data
 var pathMapper = new Map();
+pathMapper.set("/test/dataOne.csv", testData1);
+pathMapper.set("/test/dataTwo.csv", testData2);
+pathMapper.set("/test/dataThree.csv", testData3);
+pathMapper.set("/test/dataFoue.csv", testData4);
+pathMapper.set("/test/dataFive.csv", testData5);
+pathMapper.set("/test/dataSix.csv", testData6);
 //TODO: Create some fake datasets + assc file paths
 //i.e. lots of const xyz = [][];
