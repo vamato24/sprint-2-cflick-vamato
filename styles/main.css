@@ -1,6 +1,7 @@
 * {
     margin: 0;
     font-family: 'Outfit';
+    font-size: 1.2rem;
 }
 
 body {
@@ -37,9 +38,24 @@ body {
 .repl-command-box {
     width: 100%;
     margin-right: 0.5rem;
-    font-size: 1.3rem;
-    background-color: #b5bcc7;
-    border:none;
+    background-color: black;
+    border-style: solid;
+    border-color: white;
     border-radius: 0.2rem;
-    
+    outline: none;
+    color:white;
+    padding: 0.5rem;
+}
+
+.repl-button {
+    font-weight: bold;
+    font-size: 0.8rem;
+    background-color: white;
+    border: none;
+    border-radius: 0.2rem;
+}
+
+.repl-button:hover {
+    opacity: 80%;
+    cursor: pointer;
 }

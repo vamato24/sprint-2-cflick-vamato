@@ -1,11 +1,55 @@
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = function () {
+    prepareButtonPress();
     prepareKeypress();
-    prepareSumbitClick();
     // If you're adding an event for a button click, do something similar.
     // The event name in that case is "click", not "keypress", and the type of the element 
     // should be HTMLButtonElement. The handler function for a "click" takes no arguments.
 };
+function prepareButtonPress() {
+    // As far as TypeScript knows, there may be *many* elements with this class.
+    var maybeInputs = document.getElementsByClassName('repl-button');
+    // Assumption: there's only one thing
+    var maybeInput = maybeInputs.item(0);
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeInput == null) {
+        console.log("Couldn't find input element");
+    }
+    else if (!(maybeInput instanceof HTMLButtonElement)) {
+        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
+    }
+    else {
+        // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+        // The browser will invoke the function when a key is pressed with the input in focus.
+        //  (This should remind you of the strategy pattern things we've done in Java.)
+        maybeInput.addEventListener("click", handleButtonPress);
+    }
+}
+function handleButtonPress(event) {
+    // As far as TypeScript knows, there may be *many* elements with this class.
+    var maybeInputs = document.getElementsByClassName('repl-command-box');
+    // Assumption: there's only one thing
+    var maybeInput = maybeInputs.item(0);
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeInput == null) {
+        console.log("Couldn't find input element");
+    }
+    else if (!(maybeInput instanceof HTMLInputElement)) {
+        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
+    }
+    else {
+        // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+        // The browser will invoke the function when a key is pressed with the input in focus.
+        //  (This should remind you of the strategy pattern things we've done in Java.)
+        parseCommandCall(maybeInput.value);
+        maybeInput.value = "";
+        var history_1 = document.getElementsByClassName("repl-history")[0];
+        var historyHeight = history_1.scrollHeight;
+        history_1.scrollTo(0, historyHeight);
+    }
+}
 function prepareKeypress() {
     // As far as TypeScript knows, there may be *many* elements with this class.
     var maybeInputs = document.getElementsByClassName('repl-command-box');
@@ -26,31 +70,32 @@ function prepareKeypress() {
         maybeInput.addEventListener("keypress", handleKeypress);
     }
 }
-// We'll use a global state reference for now
-var pressCount = 0;
-function getPressCount() {
-    return pressCount;
-}
 function handleKeypress(event) {
     // The event has more fields than just the key pressed (e.g., Alt, Ctrl, etc.)
-    pressCount = pressCount + 1;
-    console.log("key pressed: ".concat(event.key, ". ").concat(getPressCount(), " presses seen so far."));
-}
-function prepareSumbitClick() {
-    var maybeInput = document.getElementsByClassName("repl-button");
-    if (maybeInput == null) {
-        console.log("Couldn't find sumbit button!");
+    if (event.code === "Enter") {
+        // As far as TypeScript knows, there may be *many* elements with this class.
+        var maybeInputs = document.getElementsByClassName('repl-command-box');
+        // Assumption: there's only one thing
+        var maybeInput = maybeInputs.item(0);
+        // Is the thing there? Is it of the expected type? 
+        //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+        if (maybeInput == null) {
+            console.log("Couldn't find input element");
+        }
+        else if (!(maybeInput instanceof HTMLInputElement)) {
+            console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
+        }
+        else {
+            // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+            // The browser will invoke the function when a key is pressed with the input in focus.
+            //  (This should remind you of the strategy pattern things we've done in Java.)
+            parseCommandCall(maybeInput.value);
+            maybeInput.value = "";
+            var history_2 = document.getElementsByClassName("repl-history")[0];
+            var historyHeight = history_2.scrollHeight;
+            history_2.scrollTo(0, historyHeight);
+        }
     }
-    else if (!(maybeInput instanceof HTMLButtonElement)) {
-        console.log("Found element ".concat(maybeInput, ", but it wasn't an input"));
-    }
-    else {
-        maybeInput.addEventListener("click", handleClick);
-    }
-}
-function handleClick() {
-    console.log("submit button clicked! " + getPressCount() + " keys have been pressed");
-    pressCount = 0;
 }
 function parseCommandCall(command) {
     var instruction = command.split(" ")[0];
@@ -81,9 +126,53 @@ function parseCommandCall(command) {
             //handle situations where we don't get a column or search term
             break;
         }
+        case "echo": {
+            print(command);
+            break;
+        }
         default: {
             console.log("Couldn't understand command!");
             //more front-end stuff... maybe a func to spit a message into history
+        }
+    }
+}
+function print(command) {
+    // As far as TypeScript knows, there may be *many* elements with this class.
+    var maybeDivs = document.getElementsByClassName('repl-history');
+    // Assumption: there's only one thing
+    var maybeDiv = maybeDivs.item(0);
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeDiv == null) {
+        console.log("Couldn't find input element");
+    }
+    else if (!(maybeDiv instanceof HTMLDivElement)) {
+        console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
+    }
+    else {
+        // Notice that we're passing *THE FUNCTION* as a value, not calling it.
+        // The browser will invoke the function when a key is pressed with the input in focus.
+        //  (This should remind you of the strategy pattern things we've done in Java.)
+        var instruction = command.split(" ")[0];
+        if (briefMode) {
+            var commandNode = document.createTextNode(command.substring(instruction.length));
+            var commandElement = document.createElement("p");
+            commandElement.appendChild(commandNode);
+            commandElement.className = "repl-command";
+            maybeDiv.appendChild(commandElement);
+        }
+        else {
+            var instruction_1 = command.split(" ")[0];
+            var verboseCommandNode = document.createTextNode("Command: " + command);
+            var verboseOutputNode = document.createTextNode("Output: " + command.substring(instruction_1.length));
+            var verboseCommandElement = document.createElement("p");
+            verboseCommandElement.appendChild(verboseCommandNode);
+            verboseCommandElement.className = "repl-command";
+            var verboseOutputElement = document.createElement("p");
+            verboseOutputElement.appendChild(verboseOutputNode);
+            verboseOutputElement.className = "repl-command";
+            maybeDiv.appendChild(verboseCommandElement);
+            maybeDiv.appendChild(verboseOutputElement);
         }
     }
 }
@@ -140,7 +229,7 @@ function csvSearcher(targIndex, searchTerm) {
 }
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
-export { handleKeypress, prepareKeypress, getPressCount, handleClick };
+export { prepareButtonPress, handleButtonPress };
 //TODO: Better names
 //TODO: Check if we /need/ numbers as a base or if just assuming everything is given as a workable string is acceptable
 var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"]];
