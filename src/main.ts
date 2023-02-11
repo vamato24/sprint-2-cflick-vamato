@@ -102,12 +102,7 @@ function parseCommandCall(command: string) {
     let instruction = command.split(" ")[0]     
     switch (instruction) {
         case "mode": {
-            console.log("got mode command!");
             modeSwitch()
-            //parse out info
-            //call func
-            //indicate result in command history.
-
             break;
         }
         case "load_file": {
@@ -139,8 +134,6 @@ function parseCommandCall(command: string) {
 }
 
 function print(command: string) {
-    
-    
     // As far as TypeScript knows, there may be *many* elements with this class.
     const maybeDivs: HTMLCollectionOf<Element> = document.getElementsByClassName('repl-history')
     // Assumption: there's only one thing
