@@ -1,4 +1,6 @@
 
+let mostRecentCommand = "";
+
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = () => {      
     prepareButtonPress(); 
@@ -43,12 +45,12 @@ function handleButtonPress(event: MouseEvent) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
+        mostRecentCommand = maybeInput.value;
         parseCommandCall(maybeInput.value);
         maybeInput.value = ""
         let history = document.getElementsByClassName("repl-history")[0]
         let historyHeight = history.scrollHeight;
         history.scrollTo(0, historyHeight)
-
     }
 }
 
@@ -88,13 +90,13 @@ function handleKeypress(event: KeyboardEvent) {
             // Notice that we're passing *THE FUNCTION* as a value, not calling it.
             // The browser will invoke the function when a key is pressed with the input in focus.
             //  (This should remind you of the strategy pattern things we've done in Java.)
+            mostRecentCommand = maybeInput.value;
             parseCommandCall(maybeInput.value);
             maybeInput.value = ""
             let history = document.getElementsByClassName("repl-history")[0]
             let historyHeight = history.scrollHeight;
             history.scrollTo(0, historyHeight)
-
-    }
+         }
     }
 }
 
@@ -129,19 +131,25 @@ function parseCommandCall(command: string) {
             break;
         }
         case "echo": {
-            print(command)
+            print(command.substring(5))
+            break
+        }
+        case "help": {
+            print("\Available commands: \n \
+            mode: switch between verbose and brief results \n \
+            load_file <filepath>: load a csv file from a certain <filepath> \n \
+            view: display a csv file \n \
+            search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>")
             break
         }
         default: {
-            console.log("Couldn't understand command!")
+            print("Couldn't understand command!")
             //more front-end stuff... maybe a func to spit a message into history
         }
     }
 }
 
-function print(command: string) {
-    
-    
+function print(output: string) {
     // As far as TypeScript knows, there may be *many* elements with this class.
     const maybeDivs: HTMLCollectionOf<Element> = document.getElementsByClassName('repl-history')
     // Assumption: there's only one thing
@@ -156,27 +164,26 @@ function print(command: string) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
-        let instruction = command.split(" ")[0]     
+        let instruction = output.split(" ")[0]     
         
         if (briefMode) {
-            const commandNode = document.createTextNode(command.substring(instruction.length))
-            const commandElement = document.createElement("p")
+            const commandNode = document.createTextNode(output)
+            const commandElement = document.createElement("pre")
             commandElement.appendChild(commandNode)
             commandElement.className = "repl-command";
             maybeDiv.appendChild(commandElement)
         } else {
-            const instruction = command.split(" ")[0];
-            const verboseCommandNode = document.createTextNode("Command: " + command)
-            const verboseOutputNode = document.createTextNode("Output: " + command.substring(instruction.length))
-            
-            const verboseCommandElement = document.createElement("p")
+            const instruction = output.split(" ")[0];
+            const verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand)
+            const verboseOutputNode = document.createTextNode("Output: " + output)
+            const verboseCommandElement = document.createElement("pre")
             verboseCommandElement.appendChild(verboseCommandNode)
             verboseCommandElement.className = "repl-command"
            
-            const verboseOutputElement = document.createElement("p")
+            const verboseOutputElement = document.createElement("pre")
             verboseOutputElement.appendChild(verboseOutputNode)
             verboseOutputElement.className = "repl-command"
-
+            
             maybeDiv.appendChild(verboseCommandElement)
             maybeDiv.appendChild(verboseOutputElement)
         }
@@ -189,11 +196,9 @@ let briefMode = true
 function modeSwitch() {
     briefMode = !briefMode
     if(briefMode) {
-        console.log("switched to brief mode!")
-        //front end stuff
+        print("switched to brief mode!")
     } else {
-        console.log("switched to verbose mode!")
-        //front end stuff
+        print("switched to verbose mode!")
     }
 }
 
@@ -202,10 +207,12 @@ let activeData = new Array(new Array());
 function csvLoader(targetPath: String) {
     if(pathMapper.get(targetPath) !== undefined) {
         activeData = pathMapper.get(targetPath)
-        console.log("CSV LOADED")
-    } else [
-        console.log("Couldn't find CSV!")
-    ]
+        //TODO: fix formatting
+        print(targetPath + " has been loaded! 😸")
+    } else {
+        //TODO: fix formatting
+        print("Couldn\'t find " + targetPath + " :(")
+    }
 }
 
 function csvViewer() {

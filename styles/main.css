@@ -47,15 +47,24 @@ body {
     padding: 0.5rem;
 }
 
+.repl-command {
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    padding: 0.2rem;
+    border-bottom: 4px solid white;
+}
+
 .repl-button {
     font-weight: bold;
     font-size: 0.8rem;
     background-color: white;
     border: none;
     border-radius: 0.2rem;
+    transition: opacity 0.4s;
 }
 
 .repl-button:hover {
     opacity: 80%;
     cursor: pointer;
+    transition: opacity 0.4s;
 }
