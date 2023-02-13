@@ -223,7 +223,6 @@ function csvViewer(displayData) {
     replHistory.appendChild(table);
 }
 function csvSearcher(targIndex, searchTerm) {
-    console.log("not implemented yet, go yell at connor");
     var accumulatedRows = new Array();
     var intIndex = -1;
     var potentialIntIndex = parseInt(targIndex);
@@ -240,7 +239,7 @@ function csvSearcher(targIndex, searchTerm) {
         console.log("Index doesn't exist or is out of bounds!");
     }
     activeData.forEach(function (row) {
-        if (row.includes(searchTerm)) {
+        if (row[intIndex].includes(searchTerm)) {
             accumulatedRows.push(row);
         }
     });

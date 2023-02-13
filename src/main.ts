@@ -228,8 +228,7 @@ function csvViewer(displayData: Array<Array<string>>) {
 }
 
 function csvSearcher(targIndex: string, searchTerm: string) {
-    console.log("not implemented yet, go yell at connor")
-    
+        
     let accumulatedRows = new Array()
 
     let intIndex = -1
@@ -249,7 +248,7 @@ function csvSearcher(targIndex: string, searchTerm: string) {
     }
 
     activeData.forEach(row => {
-        if(row.includes(searchTerm)){
+        if(row[intIndex].includes(searchTerm)){
             accumulatedRows.push(row)
         }
     });
