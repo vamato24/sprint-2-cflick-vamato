@@ -1,3 +1,4 @@
+var mostRecentCommand = "";
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = function () {
     prepareButtonPress();
@@ -43,6 +44,7 @@ function handleButtonPress(event) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
+        mostRecentCommand = maybeInput.value;
         parseCommandCall(maybeInput.value);
         maybeInput.value = "";
         var history_1 = document.getElementsByClassName("repl-history")[0];
@@ -89,6 +91,7 @@ function handleKeypress(event) {
             // Notice that we're passing *THE FUNCTION* as a value, not calling it.
             // The browser will invoke the function when a key is pressed with the input in focus.
             //  (This should remind you of the strategy pattern things we've done in Java.)
+            mostRecentCommand = maybeInput.value;
             parseCommandCall(maybeInput.value);
             maybeInput.value = "";
             var history_2 = document.getElementsByClassName("repl-history")[0];
@@ -127,16 +130,24 @@ function parseCommandCall(command) {
             break;
         }
         case "echo": {
-            print(command);
+            print(command.substring(5));
+            break;
+        }
+        case "help": {
+            print("\Available commands: \n \
+            mode: switch between verbose and brief results \n \
+            load_file <filepath>: load a csv file from a certain <filepath> \n \
+            view: display a csv file \n \
+            search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>");
             break;
         }
         default: {
-            console.log("Couldn't understand command!");
+            print("Couldn't understand command!");
             //more front-end stuff... maybe a func to spit a message into history
         }
     }
 }
-function print(command) {
+function print(output) {
     // As far as TypeScript knows, there may be *many* elements with this class.
     var maybeDivs = document.getElementsByClassName('repl-history');
     // Assumption: there's only one thing
@@ -153,22 +164,22 @@ function print(command) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
-        var instruction = command.split(" ")[0];
+        var instruction = output.split(" ")[0];
         if (briefMode) {
-            var commandNode = document.createTextNode(command.substring(instruction.length));
-            var commandElement = document.createElement("p");
+            var commandNode = document.createTextNode(output);
+            var commandElement = document.createElement("pre");
             commandElement.appendChild(commandNode);
             commandElement.className = "repl-command";
             maybeDiv.appendChild(commandElement);
         }
         else {
-            var instruction_1 = command.split(" ")[0];
-            var verboseCommandNode = document.createTextNode("Command: " + command);
-            var verboseOutputNode = document.createTextNode("Output: " + command.substring(instruction_1.length));
-            var verboseCommandElement = document.createElement("p");
+            var instruction_1 = output.split(" ")[0];
+            var verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand);
+            var verboseOutputNode = document.createTextNode("Output: " + output);
+            var verboseCommandElement = document.createElement("pre");
             verboseCommandElement.appendChild(verboseCommandNode);
             verboseCommandElement.className = "repl-command";
-            var verboseOutputElement = document.createElement("p");
+            var verboseOutputElement = document.createElement("pre");
             verboseOutputElement.appendChild(verboseOutputNode);
             verboseOutputElement.className = "repl-command";
             maybeDiv.appendChild(verboseCommandElement);
@@ -181,24 +192,23 @@ var briefMode = true;
 function modeSwitch() {
     briefMode = !briefMode;
     if (briefMode) {
-        console.log("switched to brief mode!");
-        //front end stuff
+        print("switched to brief mode!");
     }
     else {
-        console.log("switched to verbose mode!");
-        //front end stuff
+        print("switched to verbose mode!");
     }
 }
 var activeData = new Array(new Array());
 function csvLoader(targetPath) {
     if (pathMapper.get(targetPath) !== undefined) {
         activeData = pathMapper.get(targetPath);
-        console.log("CSV LOADED");
+        //TODO: fix formatting
+        print(targetPath + " has been loaded! 😸");
     }
-    else
-        [
-            console.log("Couldn't find CSV!")
-        ];
+    else {
+        //TODO: fix formatting
+        print("Couldn\'t find " + targetPath + " :(");
+    }
 }
 function csvViewer() {
     console.log("not implemented yet, go yell at connor");
