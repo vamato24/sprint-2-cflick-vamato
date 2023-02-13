@@ -211,7 +211,7 @@ function csvLoader(targetPath: String) {
         print(targetPath + " has been loaded! 😸")
     } else {
         //TODO: fix formatting
-        print("Couldn\'t find " + targetPath + " :(")
+        print("Couldn\'t find " + targetPath + " 😿")
     }
 }
 

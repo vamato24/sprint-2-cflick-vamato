@@ -207,7 +207,7 @@ function csvLoader(targetPath) {
     }
     else {
         //TODO: fix formatting
-        print("Couldn\'t find " + targetPath + " :(");
+        print("Couldn\'t find " + targetPath + " 😿");
     }
 }
 function csvViewer() {
