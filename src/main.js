@@ -104,11 +104,7 @@ function parseCommandCall(command) {
     var instruction = command.split(" ")[0];
     switch (instruction) {
         case "mode": {
-            console.log("got mode command!");
             modeSwitch();
-            //parse out info
-            //call func
-            //indicate result in command history.
             break;
         }
         case "load_file": {
@@ -119,7 +115,7 @@ function parseCommandCall(command) {
             break;
         }
         case "view": {
-            console.log("got view command!");
+            csvViewer();
             //something else...
             break;
         }
@@ -211,8 +207,19 @@ function csvLoader(targetPath) {
     }
 }
 function csvViewer() {
-    console.log("not implemented yet, go yell at connor");
-    //Waiting for a container to throw an html table into...
+    var replHistory = document.getElementsByClassName("repl-history")[0];
+    var table = document.createElement("table");
+    for (var row = 0; row < activeData.length; row++) {
+        var rowElement = table.appendChild(document.createElement("tr"));
+        for (var col = 0; col < activeData[row].length; col++) {
+            var colNode = document.createTextNode(activeData[row][col]);
+            var colElement = document.createElement("td");
+            colElement.appendChild(colNode);
+            colElement.className = "repl-command";
+            rowElement.appendChild(colElement);
+        }
+    }
+    replHistory.appendChild(table);
 }
 function csvSearcher(targIndex, searchTerm) {
     console.log("not implemented yet, go yell at connor");

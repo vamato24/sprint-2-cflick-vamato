@@ -104,12 +104,7 @@ function parseCommandCall(command: string) {
     let instruction = command.split(" ")[0]     
     switch (instruction) {
         case "mode": {
-            console.log("got mode command!");
             modeSwitch()
-            //parse out info
-            //call func
-            //indicate result in command history.
-
             break;
         }
         case "load_file": {
@@ -120,7 +115,7 @@ function parseCommandCall(command: string) {
             break;
         }
         case "view": {
-            console.log("got view command!");
+            csvViewer()
             //something else...
             break;
         }
@@ -216,8 +211,19 @@ function csvLoader(targetPath: String) {
 }
 
 function csvViewer() {
-    console.log("not implemented yet, go yell at connor")
-    //Waiting for a container to throw an html table into...
+    let replHistory = document.getElementsByClassName("repl-history")[0];
+    let table = document.createElement("table")
+    for (let row = 0; row < activeData.length; row++) {
+        let rowElement = table.appendChild(document.createElement("tr"))
+        for (let col = 0; col < activeData[row].length; col++) {
+            let colNode = document.createTextNode(activeData[row][col])
+            let colElement = document.createElement("td")
+            colElement.appendChild(colNode)
+            colElement.className = "repl-command"
+            rowElement.appendChild(colElement)
+        }
+    }
+    replHistory.appendChild(table)
 }
 
 function csvSearcher(targIndex: string, searchTerm: string) {

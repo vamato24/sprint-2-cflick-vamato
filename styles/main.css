@@ -51,7 +51,7 @@ body {
     margin-top: 0.2rem;
     margin-bottom: 0.2rem;
     padding: 0.2rem;
-    border-bottom: 4px solid white;
+    font-size: 0.8rem;
 }
 
 .repl-button {
