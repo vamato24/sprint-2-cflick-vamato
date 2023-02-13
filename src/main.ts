@@ -116,11 +116,12 @@ function parseCommandCall(command: string) {
         }
         case "view": {
             csvViewer()
-            //something else...
             break;
         }
         case "search": {
             console.log("got load_file command!");
+
+            csvSearcher(command.split(" ")[1], command.split(" ")[2])
             //something else...
             //handle situations where we don't get a column or search term
             break;
@@ -250,6 +251,23 @@ function csvSearcher(targIndex: string, searchTerm: string) {
             accumulatedRows.push(row)
         }
     });
+
+
+    let replHistory = document.getElementsByClassName("repl-history")[0];
+    let table = document.createElement("table")
+
+    for (let i = 0; i < accumulatedRows.length; i++) {
+        let rowElement = table.appendChild(document.createElement("tr"))
+        for (let j = 0; j < accumulatedRows[i].length; j++) {
+            let node = document.createTextNode(accumulatedRows[i][j])
+            let data = document.createElement("td")
+            data.appendChild(node)
+            data.className = "repl-command"
+            rowElement.appendChild(data)
+        }
+    }
+    replHistory.appendChild(table)
+
 
     console.log(accumulatedRows.toString())
 }

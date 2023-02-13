@@ -116,11 +116,11 @@ function parseCommandCall(command) {
         }
         case "view": {
             csvViewer();
-            //something else...
             break;
         }
         case "search": {
             console.log("got load_file command!");
+            csvSearcher(command.split(" ")[1], command.split(" ")[2]);
             //something else...
             //handle situations where we don't get a column or search term
             break;
@@ -242,6 +242,19 @@ function csvSearcher(targIndex, searchTerm) {
             accumulatedRows.push(row);
         }
     });
+    var replHistory = document.getElementsByClassName("repl-history")[0];
+    var table = document.createElement("table");
+    for (var i = 0; i < accumulatedRows.length; i++) {
+        var rowElement = table.appendChild(document.createElement("tr"));
+        for (var j = 0; j < accumulatedRows[i].length; j++) {
+            var node = document.createTextNode(accumulatedRows[i][j]);
+            var data = document.createElement("td");
+            data.appendChild(node);
+            data.className = "repl-command";
+            rowElement.appendChild(data);
+        }
+    }
+    replHistory.appendChild(table);
     console.log(accumulatedRows.toString());
 }
 // Provide this to other modules (e.g., for testing!)
