@@ -115,14 +115,15 @@ function parseCommandCall(command) {
             break;
         }
         case "view": {
-            csvViewer();
+            csvViewer(activeData);
             //something else...
             break;
         }
         case "search": {
-            console.log("got load_file command!");
+            console.log("got search command!");
             //something else...
             //handle situations where we don't get a column or search term
+            csvSearcher(command.split(" ")[1], command.split(" ")[2]);
             break;
         }
         case "echo": {
@@ -206,13 +207,13 @@ function csvLoader(targetPath) {
         print("Couldn\'t find " + targetPath + " 😿");
     }
 }
-function csvViewer() {
+function csvViewer(displayData) {
     var replHistory = document.getElementsByClassName("repl-history")[0];
     var table = document.createElement("table");
-    for (var row = 0; row < activeData.length; row++) {
+    for (var row = 0; row < displayData.length; row++) {
         var rowElement = table.appendChild(document.createElement("tr"));
-        for (var col = 0; col < activeData[row].length; col++) {
-            var colNode = document.createTextNode(activeData[row][col]);
+        for (var col = 0; col < displayData[row].length; col++) {
+            var colNode = document.createTextNode(displayData[row][col]);
             var colElement = document.createElement("td");
             colElement.appendChild(colNode);
             colElement.className = "repl-command";
@@ -234,6 +235,7 @@ function csvSearcher(targIndex, searchTerm) {
         //we know it's an str header
         intIndex = activeData[0].indexOf(targIndex);
     }
+    console.log(intIndex);
     if (intIndex < 0 || intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
         console.log("Index doesn't exist or is out of bounds!");
     }
@@ -242,7 +244,7 @@ function csvSearcher(targIndex, searchTerm) {
             accumulatedRows.push(row);
         }
     });
-    console.log(accumulatedRows.toString());
+    csvViewer(accumulatedRows);
 }
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.

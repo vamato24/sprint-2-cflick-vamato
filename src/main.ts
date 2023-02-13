@@ -115,14 +115,15 @@ function parseCommandCall(command: string) {
             break;
         }
         case "view": {
-            csvViewer()
+            csvViewer(activeData)
             //something else...
             break;
         }
         case "search": {
-            console.log("got load_file command!");
+            console.log("got search command!");
             //something else...
             //handle situations where we don't get a column or search term
+            csvSearcher(command.split(" ")[1], command.split(" ")[2])
             break;
         }
         case "echo": {
@@ -210,13 +211,13 @@ function csvLoader(targetPath: String) {
     }
 }
 
-function csvViewer() {
+function csvViewer(displayData: Array<Array<string>>) {
     let replHistory = document.getElementsByClassName("repl-history")[0];
     let table = document.createElement("table")
-    for (let row = 0; row < activeData.length; row++) {
+    for (let row = 0; row < displayData.length; row++) {
         let rowElement = table.appendChild(document.createElement("tr"))
-        for (let col = 0; col < activeData[row].length; col++) {
-            let colNode = document.createTextNode(activeData[row][col])
+        for (let col = 0; col < displayData[row].length; col++) {
+            let colNode = document.createTextNode(displayData[row][col])
             let colElement = document.createElement("td")
             colElement.appendChild(colNode)
             colElement.className = "repl-command"
@@ -241,6 +242,8 @@ function csvSearcher(targIndex: string, searchTerm: string) {
         intIndex = activeData[0].indexOf(targIndex)
     }
 
+    console.log(intIndex)
+
     if(intIndex < 0 || intIndex >= activeData.sort((a, b) => a.length - b.length)[0].length) {
         console.log("Index doesn't exist or is out of bounds!")
     }
@@ -251,7 +254,7 @@ function csvSearcher(targIndex: string, searchTerm: string) {
         }
     });
 
-    console.log(accumulatedRows.toString())
+    csvViewer(accumulatedRows)
 }
 
 // Provide this to other modules (e.g., for testing!)
