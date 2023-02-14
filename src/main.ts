@@ -123,7 +123,7 @@ function parseCommandCall(command: string) {
             console.log("got search command!");
             //something else...
             //handle situations where we don't get a column or search term
-            csvSearcher(command.split(" ")[1], command.split(" ")[2])
+            csvSearcher(command.split(" ")[1], command.split(" ").slice(2).join().replaceAll(",", " "))
             break;
         }
         case "echo": {
@@ -169,7 +169,6 @@ function print(output: string) {
             commandElement.className = "repl-command";
             maybeDiv.appendChild(commandElement)
         } else {
-            const instruction = output.split(" ")[0];
             const verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand)
             const verboseOutputNode = document.createTextNode("Output: " + output)
             const verboseCommandElement = document.createElement("pre")
@@ -212,23 +211,47 @@ function csvLoader(targetPath: String) {
 }
 
 function csvViewer(displayData: Array<Array<string>>) {
-    let replHistory = document.getElementsByClassName("repl-history")[0];
-    let table = document.createElement("table")
-    for (let row = 0; row < displayData.length; row++) {
-        let rowElement = table.appendChild(document.createElement("tr"))
-        for (let col = 0; col < displayData[row].length; col++) {
-            let colNode = document.createTextNode(displayData[row][col])
-            let colElement = document.createElement("td")
-            colElement.appendChild(colNode)
-            colElement.className = "repl-command"
-            rowElement.appendChild(colElement)
+    const maybeDivs: HTMLCollectionOf<Element> = document.getElementsByClassName('repl-history')
+    // Assumption: there's only one thing
+    const maybeDiv: Element | null = maybeDivs.item(0)
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if(maybeDiv == null) {
+        console.log("Couldn't find input element")
+    } else if(!(maybeDiv instanceof HTMLDivElement)) {
+        console.log(`Found element ${maybeDiv}, but it wasn't a div`)
+    } else {
+        if(!briefMode) {
+            const verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand)
+            const verboseCommandElement = document.createElement("pre")
+            verboseCommandElement.appendChild(verboseCommandNode)
+            verboseCommandElement.className = "repl-command"
+            maybeDiv.appendChild(verboseCommandElement)
+
+            const verboseOutputNode = document.createTextNode("Output: ")
+            const verboseOutputElement = document.createElement("pre")
+            verboseOutputElement.className = "repl-command"
+            verboseOutputElement.appendChild(verboseOutputNode)
+            maybeDiv.appendChild(verboseOutputElement)
         }
+        
+    
+        let table = document.createElement("table")
+        for (let row = 0; row < displayData.length; row++) {
+            let rowElement = table.appendChild(document.createElement("tr"))
+            for (let col = 0; col < displayData[row].length; col++) {
+                let colNode = document.createTextNode(displayData[row][col])
+                let colElement = document.createElement("td")
+                colElement.appendChild(colNode)
+                colElement.className = "repl-command"
+                rowElement.appendChild(colElement)
+            }
+        }
+        maybeDiv.appendChild(table)
     }
-    replHistory.appendChild(table)
 }
 
 function csvSearcher(targIndex: string, searchTerm: string) {
-        
     let accumulatedRows = new Array()
 
     let intIndex = -1
@@ -240,8 +263,6 @@ function csvSearcher(targIndex: string, searchTerm: string) {
         //we know it's an str header
         intIndex = activeData[0].indexOf(targIndex)
     }
-
-    console.log(intIndex)
 
     if(intIndex < 0 || intIndex >= activeData.sort((a, b) => a.length - b.length)[0].length) {
         console.log("Index doesn't exist or is out of bounds!")
@@ -267,7 +288,7 @@ const testData1 = [["1","2","3"], ["a", "b", "c"], ["true", "false", "3"]];
 const testData2 = [["hi"]]
 const testData3 = [["hello"], ["elements"], ["items"], ["objects"]]
 const testData4 = [["hello"], ["things", "bump"], ["weilufb"], ["data"]]
-const testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]]
+const testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]]
 const testData6 = [[]]
 
 //TODO: More test data

@@ -123,7 +123,7 @@ function parseCommandCall(command) {
             console.log("got search command!");
             //something else...
             //handle situations where we don't get a column or search term
-            csvSearcher(command.split(" ")[1], command.split(" ")[2]);
+            csvSearcher(command.split(" ")[1], command.split(" ").slice(2).join().replaceAll(",", " "));
             break;
         }
         case "echo": {
@@ -170,7 +170,6 @@ function print(output) {
             maybeDiv.appendChild(commandElement);
         }
         else {
-            var instruction_1 = output.split(" ")[0];
             var verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand);
             var verboseOutputNode = document.createTextNode("Output: " + output);
             var verboseCommandElement = document.createElement("pre");
@@ -208,19 +207,43 @@ function csvLoader(targetPath) {
     }
 }
 function csvViewer(displayData) {
-    var replHistory = document.getElementsByClassName("repl-history")[0];
-    var table = document.createElement("table");
-    for (var row = 0; row < displayData.length; row++) {
-        var rowElement = table.appendChild(document.createElement("tr"));
-        for (var col = 0; col < displayData[row].length; col++) {
-            var colNode = document.createTextNode(displayData[row][col]);
-            var colElement = document.createElement("td");
-            colElement.appendChild(colNode);
-            colElement.className = "repl-command";
-            rowElement.appendChild(colElement);
-        }
+    var maybeDivs = document.getElementsByClassName('repl-history');
+    // Assumption: there's only one thing
+    var maybeDiv = maybeDivs.item(0);
+    // Is the thing there? Is it of the expected type? 
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeDiv == null) {
+        console.log("Couldn't find input element");
     }
-    replHistory.appendChild(table);
+    else if (!(maybeDiv instanceof HTMLDivElement)) {
+        console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
+    }
+    else {
+        if (!briefMode) {
+            var verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand);
+            var verboseCommandElement = document.createElement("pre");
+            verboseCommandElement.appendChild(verboseCommandNode);
+            verboseCommandElement.className = "repl-command";
+            maybeDiv.appendChild(verboseCommandElement);
+            var verboseOutputNode = document.createTextNode("Output: ");
+            var verboseOutputElement = document.createElement("pre");
+            verboseOutputElement.className = "repl-command";
+            verboseOutputElement.appendChild(verboseOutputNode);
+            maybeDiv.appendChild(verboseOutputElement);
+        }
+        var table = document.createElement("table");
+        for (var row = 0; row < displayData.length; row++) {
+            var rowElement = table.appendChild(document.createElement("tr"));
+            for (var col = 0; col < displayData[row].length; col++) {
+                var colNode = document.createTextNode(displayData[row][col]);
+                var colElement = document.createElement("td");
+                colElement.appendChild(colNode);
+                colElement.className = "repl-command";
+                rowElement.appendChild(colElement);
+            }
+        }
+        maybeDiv.appendChild(table);
+    }
 }
 function csvSearcher(targIndex, searchTerm) {
     var accumulatedRows = new Array();
@@ -234,7 +257,6 @@ function csvSearcher(targIndex, searchTerm) {
         //we know it's an str header
         intIndex = activeData[0].indexOf(targIndex);
     }
-    console.log(intIndex);
     if (intIndex < 0 || intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
         console.log("Index doesn't exist or is out of bounds!");
     }
@@ -254,7 +276,7 @@ var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"]];
 var testData2 = [["hi"]];
 var testData3 = [["hello"], ["elements"], ["items"], ["objects"]];
 var testData4 = [["hello"], ["things", "bump"], ["weilufb"], ["data"]];
-var testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]];
+var testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]];
 var testData6 = [[]];
 //TODO: More test data
 var pathMapper = new Map();
