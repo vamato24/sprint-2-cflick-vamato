@@ -4,15 +4,15 @@ window.onload = function () {
     prepareButtonPress();
     prepareKeypress();
     // If you're adding an event for a button click, do something similar.
-    // The event name in that case is "click", not "keypress", and the type of the element 
+    // The event name in that case is "click", not "keypress", and the type of the element
     // should be HTMLButtonElement. The handler function for a "click" takes no arguments.
 };
 function prepareButtonPress() {
     // As far as TypeScript knows, there may be *many* elements with this class.
-    var maybeInputs = document.getElementsByClassName('repl-button');
+    var maybeInputs = document.getElementsByClassName("repl-button");
     // Assumption: there's only one thing
     var maybeInput = maybeInputs.item(0);
-    // Is the thing there? Is it of the expected type? 
+    // Is the thing there? Is it of the expected type?
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeInput == null) {
         console.log("Couldn't find input element");
@@ -29,10 +29,10 @@ function prepareButtonPress() {
 }
 function handleButtonPress(event) {
     // As far as TypeScript knows, there may be *many* elements with this class.
-    var maybeInputs = document.getElementsByClassName('repl-command-box');
+    var maybeInputs = document.getElementsByClassName("repl-command-box");
     // Assumption: there's only one thing
     var maybeInput = maybeInputs.item(0);
-    // Is the thing there? Is it of the expected type? 
+    // Is the thing there? Is it of the expected type?
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeInput == null) {
         console.log("Couldn't find input element");
@@ -54,10 +54,10 @@ function handleButtonPress(event) {
 }
 function prepareKeypress() {
     // As far as TypeScript knows, there may be *many* elements with this class.
-    var maybeInputs = document.getElementsByClassName('repl-command-box');
+    var maybeInputs = document.getElementsByClassName("repl-command-box");
     // Assumption: there's only one thing
     var maybeInput = maybeInputs.item(0);
-    // Is the thing there? Is it of the expected type? 
+    // Is the thing there? Is it of the expected type?
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeInput == null) {
         console.log("Couldn't find input element");
@@ -76,10 +76,10 @@ function handleKeypress(event) {
     // The event has more fields than just the key pressed (e.g., Alt, Ctrl, etc.)
     if (event.code === "Enter") {
         // As far as TypeScript knows, there may be *many* elements with this class.
-        var maybeInputs = document.getElementsByClassName('repl-command-box');
+        var maybeInputs = document.getElementsByClassName("repl-command-box");
         // Assumption: there's only one thing
         var maybeInput = maybeInputs.item(0);
-        // Is the thing there? Is it of the expected type? 
+        // Is the thing there? Is it of the expected type?
         //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
         if (maybeInput == null) {
             console.log("Couldn't find input element");
@@ -101,6 +101,7 @@ function handleKeypress(event) {
     }
 }
 function parseCommandCall(command) {
+    mostRecentCommand = command;
     var instruction = command.split(" ")[0];
     switch (instruction) {
         case "mode": {
@@ -108,7 +109,6 @@ function parseCommandCall(command) {
             break;
         }
         case "load_file": {
-            console.log("got load_file command!");
             //TODO: catch for bad input (no file path?)
             csvLoader(command.split(" ")[1]);
             //something else...
@@ -120,7 +120,6 @@ function parseCommandCall(command) {
             break;
         }
         case "search": {
-            console.log("got search command!");
             //something else...
             //handle situations where we don't get a column or search term
             csvSearcher(command.split(" ")[1], command.split(" ").slice(2).join().replaceAll(",", " "));
@@ -131,11 +130,12 @@ function parseCommandCall(command) {
             break;
         }
         case "help": {
-            print("\Available commands: \n \
+            print("Available commands: \n \
             mode: switch between verbose and brief results \n \
             load_file <filepath>: load a csv file from a certain <filepath> \n \
             view: display a csv file \n \
-            search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>");
+            search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>\n \
+            help: displays available commands");
             break;
         }
         default: {
@@ -146,10 +146,10 @@ function parseCommandCall(command) {
 }
 function print(output) {
     // As far as TypeScript knows, there may be *many* elements with this class.
-    var maybeDivs = document.getElementsByClassName('repl-history');
+    var maybeDivs = document.getElementsByClassName("repl-history");
     // Assumption: there's only one thing
     var maybeDiv = maybeDivs.item(0);
-    // Is the thing there? Is it of the expected type? 
+    // Is the thing there? Is it of the expected type?
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeDiv == null) {
         console.log("Couldn't find input element");
@@ -161,7 +161,6 @@ function print(output) {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
-        var instruction = output.split(" ")[0];
         if (briefMode) {
             var commandNode = document.createTextNode(output);
             var commandElement = document.createElement("pre");
@@ -194,7 +193,13 @@ function modeSwitch() {
         print("switched to verbose mode!");
     }
 }
+function getBriefMode() {
+    return briefMode;
+}
 var activeData = new Array(new Array());
+function getActiveData() {
+    return activeData;
+}
 function csvLoader(targetPath) {
     if (pathMapper.get(targetPath) !== undefined) {
         activeData = pathMapper.get(targetPath);
@@ -203,14 +208,14 @@ function csvLoader(targetPath) {
     }
     else {
         //TODO: fix formatting
-        print("Couldn\'t find " + targetPath + " 😿");
+        print("Couldn't find " + targetPath + " 😿");
     }
 }
 function csvViewer(displayData) {
-    var maybeDivs = document.getElementsByClassName('repl-history');
+    var maybeDivs = document.getElementsByClassName("repl-history");
     // Assumption: there's only one thing
     var maybeDiv = maybeDivs.item(0);
-    // Is the thing there? Is it of the expected type? 
+    // Is the thing there? Is it of the expected type?
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeDiv == null) {
         console.log("Couldn't find input element");
@@ -257,27 +262,82 @@ function csvSearcher(targIndex, searchTerm) {
         //we know it's an str header
         intIndex = activeData[0].indexOf(targIndex);
     }
-    if (intIndex < 0 || intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
-        console.log("Index doesn't exist or is out of bounds!");
+    if (intIndex < 0 ||
+        intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
+        print("Column index does not exist or is out of bounds.");
     }
-    activeData.forEach(function (row) {
-        if (row[intIndex].includes(searchTerm)) {
-            accumulatedRows.push(row);
+    else {
+        activeData.forEach(function (row) {
+            if (row[intIndex].includes(searchTerm)) {
+                accumulatedRows.push(row);
+            }
+        });
+        if (accumulatedRows.length > 0) {
+            csvViewer(accumulatedRows);
         }
-    });
-    csvViewer(accumulatedRows);
+        else {
+            print("No rows found.");
+        }
+    }
+}
+function clearHistory() {
+    var maybeDivs = document.getElementsByClassName("repl-history");
+    // Assumption: there's only one thing
+    var maybeDiv = maybeDivs.item(0);
+    // Is the thing there? Is it of the expected type?
+    //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
+    if (maybeDiv == null) {
+        console.log("Couldn't find input element");
+    }
+    else if (!(maybeDiv instanceof HTMLDivElement)) {
+        console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
+    }
+    else {
+        maybeDiv.innerHTML = "";
+    }
 }
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
-export { prepareButtonPress, handleButtonPress };
+export { prepareButtonPress, handleButtonPress, clearHistory, print, parseCommandCall, getActiveData, getBriefMode, };
 //TODO: Better names
 //TODO: Check if we /need/ numbers as a base or if just assuming everything is given as a workable string is acceptable
-var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"]];
+var testData1 = [
+    ["1", "2", "3"],
+    ["a", "b", "c"],
+    ["true", "false", "3"],
+];
 var testData2 = [["hi"]];
 var testData3 = [["hello"], ["elements"], ["items"], ["objects"]];
 var testData4 = [["hello"], ["things", "bump"], ["weilufb"], ["data"]];
-var testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]];
+var testData5 = [
+    [
+        "long",
+        "very long",
+        "very very very long",
+        "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long",
+    ],
+    ["1", "2", "3", "4"],
+];
 var testData6 = [[]];
+var testData7 = [
+    ["StarID", "ProperName", "X", "Y", "Z"],
+    ["0", "Sol", "0", "0", "0"],
+    ["1", "", "282.43485", "0.00449", "5.36884"],
+    ["2", "", "43.04329", "0.00285", "-15.24144"],
+    ["3", "", "277.11358", "0.02422", "223.27753"],
+    ["3759", "G. Psc", "7.26388", "1.55643", "0.68697"],
+    ["70667", "Proxima Centauri", "-0.47175", "-0.36132", "-1.15037"],
+    ["71454", "Rigel Kentaurus B", "-0.50359", "-0.42128", "-1.1767"],
+    ["71457", "Rigel Kentaurus A", "-0.50362", "-0.42139", "0.14824"],
+    ["87666", "Barnard's Star", "0", "0", "0"],
+    ["118721", "", "-2.28262", "0.64697", "0.29354"],
+];
+var testData8 = [
+    ["Name", "Year"],
+    ["Vinny", "2024"],
+    ["Aidan", "2025"],
+    ["Nicky", "2024"],
+];
 //TODO: More test data
 var pathMapper = new Map();
 pathMapper.set("/test/dataOne.csv", testData1);
@@ -286,5 +346,7 @@ pathMapper.set("/test/dataThree.csv", testData3);
 pathMapper.set("/test/dataFoue.csv", testData4);
 pathMapper.set("/test/dataFive.csv", testData5);
 pathMapper.set("/test/dataSix.csv", testData6);
+pathMapper.set("/test/dataSeven.csv", testData7);
+pathMapper.set("/test/dataEight.csv", testData8);
 //TODO: Create some fake datasets + assc file paths
 //i.e. lots of const xyz = [][];

@@ -4,6 +4,7 @@
   "description": "Brown CSCI0320 Sprint 1 Gearup for Fall 2022",
   "license": "UNLICENSED",
   "dependencies": {
+    "@testing-library/dom": "^9.0.0",
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
