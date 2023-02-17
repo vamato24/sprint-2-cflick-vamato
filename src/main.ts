@@ -78,7 +78,7 @@ function handleKeypress(event: KeyboardEvent): boolean | any[] {
 }
 
 function parseCommandCall(command: string): boolean | any[] {
-  let instruction = command.split(" ")[0];
+  let instruction = command.split(" ")[0].toLocaleLowerCase();
   mostRecentCommand = command;
   switch (instruction) {
     case "mode": {
@@ -107,13 +107,7 @@ function parseCommandCall(command: string): boolean | any[] {
       return true;
     }
     case "help": {
-      print(
-        "Available commands: \n \
-            mode: switch between verbose and brief results \n \
-            load_file <filepath>: load a csv file from a certain <filepath> \n \
-            view: display a csv file \n \
-            search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>"
-      );
+      print(CONST_help_output)
       return true;
     }
     default: {
@@ -289,6 +283,7 @@ function clearHistory(): boolean {
     return false;
   } else {
     maybeDiv.innerHTML = "";
+    briefMode = true;
     return true;
   }
 }
@@ -296,6 +291,8 @@ function clearHistory(): boolean {
 export {
   prepareButtonPress,
   handleButtonPress,
+  prepareKeypress,
+  handleKeypress,
   clearHistory,
   print,
   parseCommandCall,
@@ -305,6 +302,12 @@ export {
   csvLoader,
   csvSearcher,
 };
+
+export const CONST_help_output = "Available commands: \n \
+mode: switch between verbose and brief results \n \
+load_file <filepath>: load a csv file from a certain <filepath> \n \
+view: display a csv file \n \
+search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>"
 
 const testData1 = [
   ["1", "2", "3"],
@@ -355,7 +358,7 @@ const pathMapper = new Map();
 pathMapper.set("/test/dataOne.csv", testData1);
 pathMapper.set("/test/dataTwo.csv", testData2);
 pathMapper.set("/test/dataThree.csv", testData3);
-pathMapper.set("/test/dataFoue.csv", testData4);
+pathMapper.set("/test/dataFour.csv", testData4);
 pathMapper.set("/test/dataFive.csv", testData5);
 pathMapper.set("/test/dataSix.csv", testData6);
 pathMapper.set("/test/dataSeven.csv", testData7);

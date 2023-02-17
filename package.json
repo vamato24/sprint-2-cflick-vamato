@@ -1,27 +1,26 @@
 {
-  "name": "cs32-sprint1-gearup",
+  "name": "cs32-livecode-vanillaNYT",
   "version": "22.2.0",
-  "description": "Brown CSCI0320 Sprint 1 Gearup for Fall 2022",
+  "description": "Brown CSCI0320 vanilla TypeScript NYT livecode",
   "license": "UNLICENSED",
   "dependencies": {
-    "@testing-library/dom": "^9.0.0",
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
-    "jest": "^28.1.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
-    "ts-jest": "^28.0.8",
     "typescript": "^4.6.4"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.18.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "babel-jest": "^29.4.3",
+    "@types/testing-library__user-event": "^4.2.0",
     "eslint": "^8.15.0",
+    "prettier": "2.8.4",
     "web-vitals": "^2.1.4"
   },
   "type": "module",
@@ -35,7 +34,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "testing-library/no-dom-import": "off"
+    }
   },
   "browserslist": {
     "production": [
