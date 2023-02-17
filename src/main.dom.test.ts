@@ -83,7 +83,16 @@ test("load_file: produces proper brief outputs", () => {
 
   userEvent.click(submitButton);
 
-  const outputGoodText = screen.getByText("/test/dataOne.csv has been loaded! 😸");
+  const outputGoodTextOne = screen.getByText("/test/dataOne.csv has been loaded! 😸");
+
+  const testData1 = [
+    ["1", "2", "3"],
+    ["a", "b", "c"],
+    ["true", "false", "3"],
+    ["3", "6", "9"],
+  ];
+
+  expect(main.returnActiveData()).toEqual(testData1)
 
   command = "load_file woefin"
   replInput.innerHTML = command;
@@ -99,10 +108,21 @@ test("load_file: produces proper brief outputs", () => {
 
   const outputUndefText = screen.getByText("Couldn't find undefined 😿")
 
-  expect(replHistory.children.length).toBe(3);
-  expect(replHistory.children.item(0)).toBe(outputGoodText);
+  command = "load_file /test/dataTwo.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const outputGoodTextTwo = screen.getByText("/test/dataTwo.csv has been loaded! 😸");
+  const testData2 = [["hi"]];
+
+  expect(replHistory.children.length).toBe(4);
+  expect(replHistory.children.item(0)).toBe(outputGoodTextOne);
   expect(replHistory.children.item(1)).toBe(outputBadText);
   expect(replHistory.children.item(2)).toBe(outputUndefText);
+  expect(replHistory.children.item(3)).toBe(outputGoodTextTwo);
+  expect(main.returnActiveData()).toEqual(testData2)
+
 });
 
 test("view: adds a table to history with the correct structure", () => {
@@ -377,6 +397,138 @@ test("search: spaced term", () => {
   expect(replHistory.childNodes.length).toBe(2);
   expect(replHistory.children.item(1)?.children.item(0)).toBe(rowOutput.parentElement);
   expect(replHistory.children.item(1)?.children.length).toBe(1);
+})
+
+test("search across multiple files", () => {
+  let command = "load_file /test/dataNine.csv"
+  replInput.innerHTML = command;
+
+  submitButton.addEventListener("click", () => {main.parseCommandCall(command)});
+
+  userEvent.click(submitButton);
+
+  command = "search ProperName Barnard's Star"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton)
+
+  const rowOutputNine = screen.getByText("Barnard's Star")
+
+  command = "load_file /test/dataOne.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "search 2 3"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const rowOutputOne = screen.getAllByText("3")
+
+  command = "load_file /test/dataSeven.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "search fourty4 hello"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const rowOutputSeven = screen.getByText("hello") 
+  
+  command = "load_file /test/dataFour.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "search hello things"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const rowOutputFour = screen.getByText("things") 
+  
+  expect(replHistory.childNodes.length).toBe(8);
+
+  expect(replHistory.children.item(1)?.children.item(0)).toBe(rowOutputNine.parentElement);
+  expect(replHistory.children.item(1)?.children.length).toBe(1);
+
+  expect(replHistory.children.item(3)?.children.length).toBe(2);
+  expect(replHistory.children.item(3)).toBe(rowOutputOne[0].parentElement?.parentElement);
+  expect(replHistory.children.item(3)?.children.item(0)).toBe(rowOutputOne[0].parentElement);
+  expect(replHistory.children.item(3)?.childNodes.item(1)).toBe(rowOutputOne[1].parentElement);
+
+  expect(replHistory.children.item(5)?.children.item(0)).toBe(rowOutputSeven.parentElement);
+  expect(replHistory.children.item(5)?.children.length).toBe(1);
+
+  expect(replHistory.children.item(7)?.children.item(0)).toBe(rowOutputFour.parentElement);
+  expect(replHistory.children.item(7)?.children.length).toBe(1);
+})
+
+test("view across multiple files", () => {
+  let command = "load_file /test/dataNine.csv"
+  replInput.innerHTML = command;
+
+  submitButton.addEventListener("click", () => {main.parseCommandCall(command)});
+
+  userEvent.click(submitButton);
+
+  command = "view"
+  replInput.innerHTML = command;
+  userEvent.click(submitButton)
+
+  const rowOutputNine = screen.getByText("Barnard's Star").parentElement?.parentElement
+
+  command = "load_file /test/dataOne.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "view"
+  replInput.innerHTML = command;
+  userEvent.click(submitButton);
+
+  const rowOutputOne = screen.getByText("b").parentElement?.parentElement
+
+  command = "load_file /test/dataSeven.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "view"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const rowOutputSeven = screen.getByText("hello").parentElement?.parentElement
+  
+  command = "load_file /test/dataFour.csv"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  command = "view"
+  replInput.innerHTML = command;
+
+  userEvent.click(submitButton);
+
+  const rowOutputFour = screen.getByText("things").parentElement?.parentElement
+  
+  expect(replHistory.childNodes.length).toBe(8);
+
+  expect(replHistory.children.item(1)).toBe(rowOutputNine);
+  expect(replHistory.children.item(1)?.children.length).toBe(11);
+
+  expect(replHistory.children.item(3)).toBe(rowOutputOne);
+  expect(replHistory.children.item(3)?.children.length).toBe(4);
+
+  expect(replHistory.children.item(5)).toBe(rowOutputSeven);
+  expect(replHistory.children.item(5)?.children.length).toBe(3);
+
+  expect(replHistory.children.item(7)).toBe(rowOutputFour);
+  expect(replHistory.children.item(7)?.children.length).toBe(4);
 })
 
 
