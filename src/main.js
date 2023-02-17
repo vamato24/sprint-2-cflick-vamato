@@ -1,3 +1,4 @@
+//TODO: return values for testing
 var mostRecentCommand = "";
 // The window.onload callback is invoked when the window is first loaded by the browser
 window.onload = function () {
@@ -45,11 +46,12 @@ function handleButtonPress(event) {
         // The browser will invoke the function when a key is pressed with the input in focus.
         //  (This should remind you of the strategy pattern things we've done in Java.)
         mostRecentCommand = maybeInput.value;
-        parseCommandCall(maybeInput.value);
+        var workedCommand = parseCommandCall(maybeInput.value);
         maybeInput.value = "";
         var history_1 = document.getElementsByClassName("repl-history")[0];
         var historyHeight = history_1.scrollHeight;
         history_1.scrollTo(0, historyHeight);
+        return workedCommand;
     }
 }
 function prepareKeypress() {
@@ -92,11 +94,12 @@ function handleKeypress(event) {
             // The browser will invoke the function when a key is pressed with the input in focus.
             //  (This should remind you of the strategy pattern things we've done in Java.)
             mostRecentCommand = maybeInput.value;
-            parseCommandCall(maybeInput.value);
+            var workedCommand = parseCommandCall(maybeInput.value);
             maybeInput.value = "";
             var history_2 = document.getElementsByClassName("repl-history")[0];
             var historyHeight = history_2.scrollHeight;
             history_2.scrollTo(0, historyHeight);
+            return workedCommand;
         }
     }
 }
@@ -105,30 +108,25 @@ function parseCommandCall(command) {
     switch (instruction) {
         case "mode": {
             modeSwitch();
-            break;
+            return true;
         }
         case "load_file": {
             console.log("got load_file command!");
-            //TODO: catch for bad input (no file path?)
             csvLoader(command.split(" ")[1]);
-            //something else...
-            break;
+            return true;
         }
         case "view": {
             csvViewer(activeData);
-            //something else...
-            break;
+            return true;
         }
         case "search": {
             console.log("got search command!");
-            //something else...
-            //handle situations where we don't get a column or search term
-            csvSearcher(command.split(" ")[1], command.split(" ").slice(2).join().replaceAll(",", " "));
-            break;
+            var worked = csvSearcher(command.split(" ")[1], command.split(" ").slice(2).join().replaceAll(",", " "));
+            return worked;
         }
         case "echo": {
             print(command.substring(5));
-            break;
+            return true;
         }
         case "help": {
             print("\Available commands: \n \
@@ -136,11 +134,11 @@ function parseCommandCall(command) {
             load_file <filepath>: load a csv file from a certain <filepath> \n \
             view: display a csv file \n \
             search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>");
-            break;
+            return true;
         }
         default: {
             print("Couldn't understand command!");
-            //more front-end stuff... maybe a func to spit a message into history
+            return false;
         }
     }
 }
@@ -152,10 +150,12 @@ function print(output) {
     // Is the thing there? Is it of the expected type? 
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeDiv == null) {
-        console.log("Couldn't find input element");
+        console.log("Couldn't find output element");
+        return false;
     }
     else if (!(maybeDiv instanceof HTMLDivElement)) {
         console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
+        return false;
     }
     else {
         // Notice that we're passing *THE FUNCTION* as a value, not calling it.
@@ -168,6 +168,7 @@ function print(output) {
             commandElement.appendChild(commandNode);
             commandElement.className = "repl-command";
             maybeDiv.appendChild(commandElement);
+            return commandNode;
         }
         else {
             var verboseCommandNode = document.createTextNode("Command: " + mostRecentCommand);
@@ -180,10 +181,10 @@ function print(output) {
             verboseOutputElement.className = "repl-command";
             maybeDiv.appendChild(verboseCommandElement);
             maybeDiv.appendChild(verboseOutputElement);
+            return verboseOutputNode;
         }
     }
 }
-//TODO: When creating an output function, make switch on briefMode.
 var briefMode = true;
 function modeSwitch() {
     briefMode = !briefMode;
@@ -193,17 +194,21 @@ function modeSwitch() {
     else {
         print("switched to verbose mode!");
     }
+    return briefMode;
 }
 var activeData = new Array(new Array());
+function returnActiveData() {
+    return activeData;
+}
 function csvLoader(targetPath) {
     if (pathMapper.get(targetPath) !== undefined) {
         activeData = pathMapper.get(targetPath);
-        //TODO: fix formatting
         print(targetPath + " has been loaded! 😸");
+        return true;
     }
     else {
-        //TODO: fix formatting
         print("Couldn\'t find " + targetPath + " 😿");
+        return false;
     }
 }
 function csvViewer(displayData) {
@@ -213,7 +218,7 @@ function csvViewer(displayData) {
     // Is the thing there? Is it of the expected type? 
     //  (Remember that the HTML author is free to assign the repl-input class to anything :-) )
     if (maybeDiv == null) {
-        console.log("Couldn't find input element");
+        console.log("Couldn't find output element");
     }
     else if (!(maybeDiv instanceof HTMLDivElement)) {
         console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
@@ -243,8 +248,13 @@ function csvViewer(displayData) {
             }
         }
         maybeDiv.appendChild(table);
+        //check to make sure didn't fail
+        return true;
     }
 }
+//TODO: What if there is a header that has spaces in it?
+//OPTION: Do nothing! Headers don't have spaces. That's that.
+//OPTION: Somehow demarcate between index and search term. (commas?)
 function csvSearcher(targIndex, searchTerm) {
     var accumulatedRows = new Array();
     var intIndex = -1;
@@ -258,7 +268,7 @@ function csvSearcher(targIndex, searchTerm) {
         intIndex = activeData[0].indexOf(targIndex);
     }
     if (intIndex < 0 || intIndex >= activeData.sort(function (a, b) { return a.length - b.length; })[0].length) {
-        console.log("Index doesn't exist or is out of bounds!");
+        throw new Error("Index doesn't exist or is out of bounds!");
     }
     activeData.forEach(function (row) {
         if (row[intIndex].includes(searchTerm)) {
@@ -266,19 +276,21 @@ function csvSearcher(targIndex, searchTerm) {
         }
     });
     csvViewer(accumulatedRows);
+    return accumulatedRows;
 }
 // Provide this to other modules (e.g., for testing!)
 // The configuration in this project will require /something/ to be exported.
-export { prepareButtonPress, handleButtonPress };
+export { prepareButtonPress, handleButtonPress, prepareKeypress, handleKeypress, parseCommandCall, print, modeSwitch, csvLoader, csvViewer, csvSearcher, returnActiveData };
 //TODO: Better names
 //TODO: Check if we /need/ numbers as a base or if just assuming everything is given as a workable string is acceptable
-var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"]];
+var testData1 = [["1", "2", "3"], ["a", "b", "c"], ["true", "false", "3"], ["3", "6", "9"]];
 var testData2 = [["hi"]];
 var testData3 = [["hello"], ["elements"], ["items"], ["objects"]];
 var testData4 = [["hello"], ["things", "bump"], ["weilufb"], ["data"]];
 var testData5 = [["long", "very long", "very very very long", "verrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry long"], ["1", "2", "3", "4"]];
 var testData6 = [[]];
-//TODO: More test data
+var testData7 = [["four", "4", "fourty4", "4th"], ["wioeufn", "weio", "wefuo", "dance"], ["hey", "hi", "hello", "what\'s up"]];
+var testData8 = [[""]];
 var pathMapper = new Map();
 pathMapper.set("/test/dataOne.csv", testData1);
 pathMapper.set("/test/dataTwo.csv", testData2);
@@ -286,5 +298,5 @@ pathMapper.set("/test/dataThree.csv", testData3);
 pathMapper.set("/test/dataFoue.csv", testData4);
 pathMapper.set("/test/dataFive.csv", testData5);
 pathMapper.set("/test/dataSix.csv", testData6);
-//TODO: Create some fake datasets + assc file paths
-//i.e. lots of const xyz = [][];
+pathMapper.set("/test/dataSeven.csv", testData7);
+pathMapper.set("/test/dataEight.csv", testData8);
