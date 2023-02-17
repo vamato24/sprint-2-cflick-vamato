@@ -51,10 +51,10 @@ test("command is read correctly from input", () => {
 });
 
 test("loading a file updates internal state", () => {
-  const command = "load_file /test/dataSeven.csv";
+  const command = "load_file /test/dataNine.csv";
   replInput.innerHTML = command;
 
-  const testDataSeven = [
+  const testDataNine = [
     ["StarID", "ProperName", "X", "Y", "Z"],
     ["0", "Sol", "0", "0", "0"],
     ["1", "", "282.43485", "0.00449", "5.36884"],
@@ -72,11 +72,11 @@ test("loading a file updates internal state", () => {
 
   userEvent.click(submitButton);
 
-  expect(main.getActiveData()).toEqual(testDataSeven);
+  expect(main.returnActiveData()).toEqual(testDataNine);
 });
 
 test("view: adds a table to history with the correct structure", () => {
-  let command = "load_file /test/dataEight.csv";
+  let command = "load_file /test/dataTen.csv";
   replInput.innerHTML = command;
 
   submitButton.addEventListener("click", () => main.parseCommandCall(command));
@@ -96,7 +96,7 @@ test("view: adds a table to history with the correct structure", () => {
 });
 
 test("search: adds a row to history correctly", () => {
-  let command = "load_file /test/dataEight.csv";
+  let command = "load_file /test/dataTen.csv";
   replInput.innerHTML = command;
 
   submitButton.addEventListener("click", () => main.parseCommandCall(command));

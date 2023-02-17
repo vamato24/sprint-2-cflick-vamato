@@ -28,9 +28,9 @@ test("command is read correctly from input", function () {
     expect(replHistory.firstChild).toBe(echoResult[0]);
 });
 test("loading a file updates internal state", function () {
-    var command = "load_file /test/dataSeven.csv";
+    var command = "load_file /test/dataNine.csv";
     replInput.innerHTML = command;
-    var testDataSeven = [
+    var testDataNine = [
         ["StarID", "ProperName", "X", "Y", "Z"],
         ["0", "Sol", "0", "0", "0"],
         ["1", "", "282.43485", "0.00449", "5.36884"],
@@ -45,11 +45,11 @@ test("loading a file updates internal state", function () {
     ];
     submitButton.addEventListener("click", function () { return main.parseCommandCall(command); });
     userEvent.click(submitButton);
-    expect(main.getActiveData()).toEqual(testDataSeven);
+    expect(main.returnActiveData()).toEqual(testDataNine);
 });
 test("view: adds a table to history with the correct structure", function () {
     var _a, _b;
-    var command = "load_file /test/dataEight.csv";
+    var command = "load_file /test/dataTen.csv";
     replInput.innerHTML = command;
     submitButton.addEventListener("click", function () { return main.parseCommandCall(command); });
     userEvent.click(submitButton);
@@ -63,7 +63,7 @@ test("view: adds a table to history with the correct structure", function () {
 });
 test("search: adds a row to history correctly", function () {
     var _a, _b;
-    var command = "load_file /test/dataEight.csv";
+    var command = "load_file /test/dataTen.csv";
     replInput.innerHTML = command;
     submitButton.addEventListener("click", function () { return main.parseCommandCall(command); });
     userEvent.click(submitButton);
