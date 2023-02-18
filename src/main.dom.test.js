@@ -64,6 +64,7 @@ test("load_file: produces proper brief outputs", function () {
     replInput.innerHTML = command;
     userEvent.click(submitButton);
     var outputBadText = screen.getByText("Couldn't find woefin 😿");
+    expect(main.returnActiveData()).toEqual(testData1);
     command = "load_file";
     replInput.innerHTML = command;
     userEvent.click(submitButton);
