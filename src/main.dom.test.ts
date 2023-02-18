@@ -101,6 +101,8 @@ test("load_file: produces proper brief outputs", () => {
 
   const outputBadText = screen.getByText("Couldn't find woefin 😿")
 
+  expect(main.returnActiveData()).toEqual(testData1)
+
   command = "load_file"
   replInput.innerHTML = command;
 
