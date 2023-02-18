@@ -1,11 +1,14 @@
 /** a String representing the most recent command executed */
 var mostRecentCommand = "";
+/**
+ * Activates once window is loaded, preps button and keypress actions
+ */
 window.onload = function () {
     prepareButtonPress();
     prepareKeypress();
 };
 /**
- * This function adds an event listener to the submit button
+ * This function adds an event listener for clicking to the submit button
  */
 function prepareButtonPress() {
     var maybeInputs = document.getElementsByClassName("repl-button");
@@ -20,6 +23,11 @@ function prepareButtonPress() {
         maybeInput.addEventListener("click", handleButtonPress);
     }
 }
+/**
+ * Manages when the submit button is clicked, passing off the input and displaying the output.
+ * @param event A mouse click on the submit button
+ * @returns the result of workedCommand, which may be a boolean or any[] to indicate sucessful processing. false always means something went wrong.
+ */
 function handleButtonPress(event) {
     var maybeInputs = document.getElementsByClassName("repl-command-box");
     var maybeInput = maybeInputs.item(0);
@@ -40,6 +48,9 @@ function handleButtonPress(event) {
     }
     return false;
 }
+/**
+ * This function adds an event listener for keypresses to the input box
+ */
 function prepareKeypress() {
     var maybeInputs = document.getElementsByClassName("repl-command-box");
     var maybeInput = maybeInputs.item(0);
@@ -53,6 +64,11 @@ function prepareKeypress() {
         maybeInput.addEventListener("keypress", handleKeypress);
     }
 }
+/**
+ * Manages when a keypress occurs, particularly enter, passing off the input and displaying the output.
+ * @param event Any keyboard event.
+ * @returns The result of workedCommand, which may be a boolean or any[] to indicate sucessful processing. false means something went wrong or enter wasn't pressed.
+ */
 function handleKeypress(event) {
     if (event.code === "Enter") {
         var maybeInputs = document.getElementsByClassName("repl-command-box");
@@ -75,6 +91,11 @@ function handleKeypress(event) {
     }
     return false;
 }
+/**
+ * Parses the inputted command and calls upon the correlated function, if one exists.
+ * @param command Any string. A proper command will be in the format "[command] <args>[]". Assumes spaces are different args, and that the first word is always the intended command.
+ * @returns true or any[] when the parsing succeeds and calls upon a known function, false if something fails or the command is not recognized.
+ */
 function parseCommandCall(command) {
     var instruction = command.split(" ")[0].toLocaleLowerCase();
     mostRecentCommand = command;
@@ -111,6 +132,11 @@ function parseCommandCall(command) {
         }
     }
 }
+/**
+ * Prints whatever string was given to the repl-history. May vary depending on whether verbose mode is active.
+ * @param output The string to be printed to the repl-history. Will also print the input command if in verbose mode.
+ * @returns false if something failed and the repl-history could not be found, or the created Text node if the output was successfully printed.
+ */
 function print(output) {
     var maybeDivs = document.getElementsByClassName("repl-history");
     var maybeDiv = maybeDivs.item(0);
@@ -146,7 +172,12 @@ function print(output) {
         }
     }
 }
+/** Indicates whether brief or verbose mode should be active. true = brief mode, false = verbose mode. Default is brief.*/
 var briefMode = true;
+/**
+ * Changes briefMode to be whatever it isn't. If brief mode is active, switches to verbose mode, and vice-versa.
+ * @returns the new status of briefMode, which happens to be a boolean.
+ */
 function modeSwitch() {
     briefMode = !briefMode;
     if (briefMode) {
@@ -157,13 +188,29 @@ function modeSwitch() {
     }
     return briefMode;
 }
+/**
+ *
+ * @returns Gives the current status of briefMode.
+ */
 function getBriefMode() {
     return briefMode;
 }
+/**
+ * The array of active mock csv data currently being considered by the program. Should always be a 2D Array.
+ */
 var activeData = new Array(new Array());
+/**
+ *
+ * @returns The current 2D array of active data.
+ */
 function returnActiveData() {
     return activeData;
 }
+/**
+ * Sets activeData to be whatever corresponds with the given path in pathMapper. Prints a failure message otherwise.
+ * @param targetPath The exact path to find the csv file, given as a string.
+ * @returns A boolean indicating whether the path successfully corresponded with a (mocked) CSV file.
+ */
 function csvLoader(targetPath) {
     if (pathMapper.get(targetPath) !== undefined) {
         activeData = pathMapper.get(targetPath);
@@ -175,14 +222,21 @@ function csvLoader(targetPath) {
         return false;
     }
 }
+/**
+ * Similar to print, except converting a 2D array of strings to a HTML table to be displayed in the repl-history box. Will print a "table" even if there is no data in the array.
+ * @param displayData The 2D array of strings to be viewed.
+ * @returns A boolean indicating whether the displayData was successfully placed in replHistory.
+ */
 function csvViewer(displayData) {
     var maybeDivs = document.getElementsByClassName("repl-history");
     var maybeDiv = maybeDivs.item(0);
     if (maybeDiv == null) {
         console.log("Couldn't find output element");
+        return false;
     }
     else if (!(maybeDiv instanceof HTMLDivElement)) {
         console.log("Found element ".concat(maybeDiv, ", but it wasn't a div"));
+        return false;
     }
     else {
         if (!briefMode) {
@@ -197,9 +251,9 @@ function csvViewer(displayData) {
             verboseOutputElement.appendChild(verboseOutputNode);
             maybeDiv.appendChild(verboseOutputElement);
         }
-        var table_1 = document.createElement("table");
+        var table = document.createElement("table");
         for (var row = 0; row < displayData.length; row++) {
-            var rowElement = table_1.appendChild(document.createElement("tr"));
+            var rowElement = table.appendChild(document.createElement("tr"));
             for (var col = 0; col < displayData[row].length; col++) {
                 var colNode = document.createTextNode(displayData[row][col]);
                 var colElement = document.createElement("td");
@@ -208,23 +262,18 @@ function csvViewer(displayData) {
                 rowElement.appendChild(colElement);
             }
         }
-        maybeDiv.appendChild(table_1);
+        maybeDiv.appendChild(table);
         //check to make sure didn't fail
         return true;
     }
-    var table = document.createElement("table");
-    for (var row = 0; row < displayData.length; row++) {
-        var rowElement = table.appendChild(document.createElement("tr"));
-        for (var col = 0; col < displayData[row].length; col++) {
-            var colNode = document.createTextNode(displayData[row][col]);
-            var colElement = document.createElement("td");
-            colElement.appendChild(colNode);
-            colElement.className = "repl-command";
-            rowElement.appendChild(colElement);
-        }
-    }
-    maybeDiv === null || maybeDiv === void 0 ? void 0 : maybeDiv.appendChild(table);
 }
+/**
+ * Searches within a given targIndex (representing either a int index or a string header) for searchTerm in each row. Unnecessary, but allows for more dynamic mocking.
+ * @param targIndex The string containing the header or the int index for the column that search term should be searched within. Assumes that an int wrapped in a string always suggests an int index.
+ * @param searchTerm The exact search term that should be found.
+ * @throws Error indicating that an index is out of bounds is targIndex is out of bounds or cannot be found in potential headers in the first row of the activeData.
+ * @returns A list of the rows that contain the searchTerm in the targIndex column.
+ */
 function csvSearcher(targIndex, searchTerm) {
     var accumulatedRows = new Array();
     var intIndex = -1;
@@ -247,6 +296,10 @@ function csvSearcher(targIndex, searchTerm) {
     csvViewer(accumulatedRows);
     return accumulatedRows;
 }
+/**
+ * Wipes repl-history clear of any previous commands. Sets brief mode back to true.
+ * @returns A boolean indicating whether repl-history was successfully cleared.
+ */
 function clearHistory() {
     var maybeDivs = document.getElementsByClassName("repl-history");
     var maybeDiv = maybeDivs.item(0);
@@ -265,11 +318,14 @@ function clearHistory() {
     }
 }
 export { prepareButtonPress, handleButtonPress, prepareKeypress, handleKeypress, clearHistory, print, parseCommandCall, returnActiveData, getBriefMode, modeSwitch, csvLoader, csvSearcher, };
+/**The text to be used for the help command. Displays all possible commands. */
 export var CONST_help_output = "Available commands: \n \
 mode: switch between verbose and brief results \n \
 load_file <filepath>: load a csv file from a certain <filepath> \n \
 view: display a csv file \n \
 search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>";
+/* ----------------------------------------------------------------- */
+//Everything below is the mock data and associated CSV paths. 
 var testData1 = [
     ["1", "2", "3"],
     ["a", "b", "c"],
@@ -314,6 +370,7 @@ var testData10 = [
     ["Aidan", "2025"],
     ["Nicky", "2024"],
 ];
+/** The map that corresponds each csv path with it's associated data. */
 var pathMapper = new Map();
 pathMapper.set("/test/dataOne.csv", testData1);
 pathMapper.set("/test/dataTwo.csv", testData2);
