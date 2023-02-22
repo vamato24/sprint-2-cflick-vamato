@@ -68,7 +68,7 @@ function prepareKeypress(): void {
 
 /**
  * Manages when a keypress occurs, particularly enter, passing off the input and displaying the output.
- * @param event Any keyboard event. 
+ * @param event Any keyboard event.
  * @returns The result of workedCommand, which may be a boolean or any[] to indicate sucessful processing. false means something went wrong or enter wasn't pressed.
  */
 function handleKeypress(event: KeyboardEvent): boolean | any[] {
@@ -94,7 +94,7 @@ function handleKeypress(event: KeyboardEvent): boolean | any[] {
 }
 
 /**
- * Parses the inputted command and calls upon the correlated function, if one exists. 
+ * Parses the inputted command and calls upon the correlated function, if one exists.
  * @param command Any string. A proper command will be in the format "[command] <args>[]". Assumes spaces are different args, and that the first word is always the intended command.
  * @returns true or any[] when the parsing succeeds and calls upon a known function, false if something fails or the command is not recognized.
  */
@@ -128,7 +128,7 @@ function parseCommandCall(command: string): boolean | any[] {
       return true;
     }
     case "help": {
-      print(CONST_help_output)
+      print(CONST_help_output);
       return true;
     }
     default: {
@@ -199,7 +199,7 @@ function modeSwitch(): boolean {
 }
 
 /**
- * 
+ *
  * @returns Gives the current status of briefMode.
  */
 function getBriefMode(): boolean {
@@ -212,7 +212,7 @@ function getBriefMode(): boolean {
 let activeData = new Array(new Array());
 
 /**
- * 
+ *
  * @returns The current 2D array of active data.
  */
 function returnActiveData(): any[] {
@@ -237,8 +237,8 @@ function csvLoader(targetPath: string): boolean {
 
 /**
  * Similar to print, except converting a 2D array of strings to a HTML table to be displayed in the repl-history box. Will print a "table" even if there is no data in the array.
- * @param displayData The 2D array of strings to be viewed. 
- * @returns A boolean indicating whether the displayData was successfully placed in replHistory. 
+ * @param displayData The 2D array of strings to be viewed.
+ * @returns A boolean indicating whether the displayData was successfully placed in replHistory.
  */
 function csvViewer(displayData: Array<Array<string>>): boolean {
   const maybeDivs: HTMLCollectionOf<Element> =
@@ -356,15 +356,16 @@ export {
 };
 
 /**The text to be used for the help command. Displays all possible commands. */
-export const CONST_help_output = "Available commands: \n \
+export const CONST_help_output =
+  "Available commands: \n \
 mode: switch between verbose and brief results \n \
 load_file <filepath>: load a csv file from a certain <filepath> \n \
 view: display a csv file \n \
-search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>"
+search <index> <term>: returns all rows in the loaded csv file that contain <term> in the column at <index>";
 
 /* ----------------------------------------------------------------- */
 
-//Everything below is the mock data and associated CSV paths. 
+//Everything below is the mock data and associated CSV paths.
 const testData1 = [
   ["1", "2", "3"],
   ["a", "b", "c"],
@@ -422,3 +423,6 @@ pathMapper.set("/test/dataSeven.csv", testData7);
 pathMapper.set("/test/dataEight.csv", testData8);
 pathMapper.set("/test/dataNine.csv", testData9);
 pathMapper.set("/test/dataTen.csv", testData10);
+
+var ghpages = require("gh-pages");
+ghpages.publish("dist", function () {});
