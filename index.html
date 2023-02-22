@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sprint 2: Echo</title>
+    <link rel="stylesheet" href="css/main.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Tell the browser what to show if JavaScript/TypeScript is disabled. -->
+    <noscript>This example requires JavaScript to run.</noscript>
+    <!-- Prepare a region of the page to hold the entire REPL interface -->
+    <div class="repl">
+      <!-- Prepare a region of the page to hold the command history -->
+      <div class="repl-history"></div>
+
+      <!-- Prepare a region of the page to hold the command input box -->
+      <div class="repl-input">
+        <input type="text" class="repl-command-box" />
+        <button type="button" class="repl-button">Submit</button>
+      </div>
+    </div>
+    <!-- Load the script! Note: the .js extension is because browsers don't use TypeScript
+    directly. Instead, the author of the site needs to compile the TypeScript to JavaScript. -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

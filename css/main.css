@@ -1,0 +1,83 @@
+* {
+  margin: 0;
+  font-family: "Outfit";
+  font-size: 1.2rem;
+}
+
+body {
+  position: relative;
+  height: 100vh;
+  background-color: black;
+}
+
+.repl {
+  position: absolute;
+  bottom: 2rem;
+  width: 100%;
+}
+
+.repl-history {
+  height: 95vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0rem 2rem;
+  color: greenyellow;
+}
+
+.repl-history > :first-child {
+  margin-top: auto;
+}
+
+.repl-input {
+  display: flex;
+  padding: 0rem 2rem;
+  padding-top: 1rem;
+}
+
+.repl-command-box {
+  width: 100%;
+  margin-right: 0.5rem;
+  background-color: black;
+  border-style: solid;
+  border-color: white;
+  border-radius: 0.2rem;
+  outline: none;
+  color: white;
+  padding: 0.5rem;
+}
+
+.repl-command {
+  margin-top: 0.2rem;
+  margin-bottom: 0.4rem;
+  padding: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.repl-button {
+  font-weight: bold;
+  font-size: 0.8rem;
+  background-color: white;
+  border: none;
+  border-radius: 0.2rem;
+  transition: opacity 0.4s;
+}
+
+.repl-button:hover {
+  opacity: 80%;
+  cursor: pointer;
+  transition: opacity 0.4s;
+}
+
+td {
+  border: solid;
+  border-color: rgb(47, 95, 49);
+  text-align: center;
+  overflow: auto;
+  min-width: 5rem;
+  max-width: 20rem;
+}
+
+table {
+  margin-bottom: 0.4rem;
+}
